@@ -33,64 +33,130 @@ var SongFilter = function (_React$Component) {
   return SongFilter;
 }(React.Component);
 
-var SongTable = function (_React$Component2) {
-  _inherits(SongTable, _React$Component2);
+var SetList = function (_React$Component2) {
+  _inherits(SetList, _React$Component2);
 
-  function SongTable() {
-    _classCallCheck(this, SongTable);
+  function SetList(props) {
+    _classCallCheck(this, SetList);
 
-    return _possibleConstructorReturn(this, (SongTable.__proto__ || Object.getPrototypeOf(SongTable)).apply(this, arguments));
+    var _this2 = _possibleConstructorReturn(this, (SetList.__proto__ || Object.getPrototypeOf(SetList)).call(this, props));
+
+    _this2.state = { sets: props.setList.sets };
+    _this2.createSet = _this2.createSet.bind(_this2);
+    return _this2;
   }
 
-  _createClass(SongTable, [{
+  _createClass(SetList, [{
+    key: "createSet",
+    value: function createSet(newSet) {
+      var newSets = this.state.sets.slice();
+      newSet.id = this.state.sets.length + 1;
+      newSets.push(newSet);
+      this.setState({ sets: newSets });
+    }
+  }, {
     key: "render",
     value: function render() {
-      var songRows = this.props.songs.map(function (s) {
-        return React.createElement(SongRow, { key: s.id, song: s });
+      var sets = this.props.setList.sets.map(function (s) {
+        return React.createElement(Set, { key: s.id, set: s });
       });
       return React.createElement(
-        "table",
-        { className: "bordered-table" },
+        "div",
+        null,
         React.createElement(
-          "thead",
+          "h2",
           null,
+          this.props.setList.title
+        ),
+        React.createElement(SetAdd, { createSet: this.createSet }),
+        sets
+      );
+    }
+  }]);
+
+  return SetList;
+}(React.Component);
+
+var Set = function (_React$Component3) {
+  _inherits(Set, _React$Component3);
+
+  function Set(props) {
+    _classCallCheck(this, Set);
+
+    var _this3 = _possibleConstructorReturn(this, (Set.__proto__ || Object.getPrototypeOf(Set)).call(this, props));
+
+    _this3.state = { songs: props.set.songs };
+    _this3.createSong = _this3.createSong.bind(_this3);
+    return _this3;
+  }
+
+  _createClass(Set, [{
+    key: "createSong",
+    value: function createSong(newSong) {
+      var newSongs = this.state.songs.slice();
+      newSong.id = this.state.songs.length + 1;
+      newSongs.push(newSong);
+      this.setState({ songs: newSongs });
+    }
+  }, {
+    key: "render",
+    value: function render() {
+      var songRows = this.props.set.songs.map(function (s) {
+        return React.createElement(Song, { key: s.id, song: s });
+      });
+      return React.createElement(
+        "div",
+        null,
+        React.createElement(
+          "h2",
+          null,
+          this.props.set.title
+        ),
+        React.createElement(SongAdd, { createSong: this.createSong }),
+        React.createElement(
+          "table",
+          { className: "bordered-table" },
           React.createElement(
-            "tr",
+            "thead",
             null,
             React.createElement(
-              "th",
+              "tr",
               null,
-              "Id"
-            ),
-            React.createElement(
-              "th",
-              null,
-              "Title"
+              React.createElement(
+                "th",
+                null,
+                "Id"
+              ),
+              React.createElement(
+                "th",
+                null,
+                "Title"
+              )
             )
+          ),
+          React.createElement(
+            "tbody",
+            null,
+            songRows
           )
-        ),
-        React.createElement(
-          "tbody",
-          null,
-          songRows
         )
       );
     }
   }]);
 
-  return SongTable;
+  return Set;
 }(React.Component);
 
-var SongRow = function (_React$Component3) {
-  _inherits(SongRow, _React$Component3);
+var Song = function (_React$Component4) {
+  _inherits(Song, _React$Component4);
 
-  function SongRow() {
-    _classCallCheck(this, SongRow);
+  function Song() {
+    _classCallCheck(this, Song);
 
-    return _possibleConstructorReturn(this, (SongRow.__proto__ || Object.getPrototypeOf(SongRow)).apply(this, arguments));
+    return _possibleConstructorReturn(this, (Song.__proto__ || Object.getPrototypeOf(Song)).apply(this, arguments));
   }
 
-  _createClass(SongRow, [{
+  _createClass(Song, [{
     key: "render",
     value: function render() {
       var song = this.props.song;
@@ -111,19 +177,64 @@ var SongRow = function (_React$Component3) {
     }
   }]);
 
-  return SongRow;
+  return Song;
 }(React.Component);
 
-var SongAdd = function (_React$Component4) {
-  _inherits(SongAdd, _React$Component4);
+var SetAdd = function (_React$Component5) {
+  _inherits(SetAdd, _React$Component5);
+
+  function SetAdd() {
+    _classCallCheck(this, SetAdd);
+
+    var _this5 = _possibleConstructorReturn(this, (SetAdd.__proto__ || Object.getPrototypeOf(SetAdd)).call(this));
+
+    _this5.handleSubmit = _this5.handleSubmit.bind(_this5);
+    return _this5;
+  }
+
+  _createClass(SetAdd, [{
+    key: "handleSubmit",
+    value: function handleSubmit(e) {
+      e.preventDefault();
+      var form = document.forms.setAdd;
+      this.props.createSet({
+        title: form.title.value
+      });
+      form.title.value = "";
+    }
+  }, {
+    key: "render",
+    value: function render() {
+      return React.createElement(
+        "div",
+        null,
+        React.createElement(
+          "form",
+          { name: "setAdd", onSubmit: this.handleSubmit },
+          React.createElement("input", { type: "text", name: "title", placeholder: "Title" }),
+          React.createElement(
+            "button",
+            null,
+            "Add Set"
+          )
+        )
+      );
+    }
+  }]);
+
+  return SetAdd;
+}(React.Component);
+
+var SongAdd = function (_React$Component6) {
+  _inherits(SongAdd, _React$Component6);
 
   function SongAdd() {
     _classCallCheck(this, SongAdd);
 
-    var _this4 = _possibleConstructorReturn(this, (SongAdd.__proto__ || Object.getPrototypeOf(SongAdd)).call(this));
+    var _this6 = _possibleConstructorReturn(this, (SongAdd.__proto__ || Object.getPrototypeOf(SongAdd)).call(this));
 
-    _this4.handleSubmit = _this4.handleSubmit.bind(_this4);
-    return _this4;
+    _this6.handleSubmit = _this6.handleSubmit.bind(_this6);
+    return _this6;
   }
 
   _createClass(SongAdd, [{
@@ -149,7 +260,7 @@ var SongAdd = function (_React$Component4) {
           React.createElement(
             "button",
             null,
-            "Add"
+            "Add Song"
           )
         )
       );
@@ -159,22 +270,24 @@ var SongAdd = function (_React$Component4) {
   return SongAdd;
 }(React.Component);
 
-var songs = [{ id: 0, title: "Purple Rain" }, { id: 1, title: "Rain Song" }];
+var setLists = [{ id: 0, title: "Big Gig",
+  sets: [{ id: 0, title: "Set 1", songs: [{ id: 0, title: "Purple Rain" }, { id: 1, title: "Rain Song" }] }, { id: 1, title: "Set 2", songs: [{ id: 0, title: "Purple Rain" }, { id: 1, title: "Rain Song" }] }]
+}];
 
-var SetList = function (_React$Component5) {
-  _inherits(SetList, _React$Component5);
+var SetLists = function (_React$Component7) {
+  _inherits(SetLists, _React$Component7);
 
-  function SetList() {
-    _classCallCheck(this, SetList);
+  function SetLists() {
+    _classCallCheck(this, SetLists);
 
-    var _this5 = _possibleConstructorReturn(this, (SetList.__proto__ || Object.getPrototypeOf(SetList)).call(this));
+    var _this7 = _possibleConstructorReturn(this, (SetLists.__proto__ || Object.getPrototypeOf(SetLists)).call(this));
 
-    _this5.state = { songs: [] };
-    _this5.createSong = _this5.createSong.bind(_this5);
-    return _this5;
+    _this7.state = { setLists: [] };
+    _this7.createSetlist = _this7.createSetlist.bind(_this7);
+    return _this7;
   }
 
-  _createClass(SetList, [{
+  _createClass(SetLists, [{
     key: "componentDidMount",
     value: function componentDidMount() {
       this.loadData();
@@ -182,23 +295,26 @@ var SetList = function (_React$Component5) {
   }, {
     key: "loadData",
     value: function loadData() {
-      var _this6 = this;
+      var _this8 = this;
 
       setTimeout(function () {
-        _this6.setState({ songs: songs });
+        _this8.setState({ setLists: setLists });
       }, 500);
     }
   }, {
-    key: "createSong",
-    value: function createSong(newSong) {
-      var newSongs = this.state.songs.slice();
-      newSong.id = this.state.songs.length + 1;
-      newSongs.push(newSong);
-      this.setState({ songs: newSongs });
+    key: "createSetlist",
+    value: function createSetlist(newSetlist) {
+      var newSetlists = this.state.setLists.slice();
+      newSetlist.id = this.state.setLists.length + 1;
+      newSetlists.push(newSetlist);
+      this.setState({ setLists: newSetlists });
     }
   }, {
     key: "render",
     value: function render() {
+      var setLists = this.state.setLists.map(function (s) {
+        return React.createElement(SetList, { key: s.id, setList: s });
+      });
       return React.createElement(
         "div",
         null,
@@ -209,14 +325,12 @@ var SetList = function (_React$Component5) {
         ),
         React.createElement(SongFilter, null),
         React.createElement("hr", null),
-        React.createElement(SongTable, { songs: this.state.songs }),
-        React.createElement("hr", null),
-        React.createElement(SongAdd, { createSong: this.createSong })
+        setLists
       );
     }
   }]);
 
-  return SetList;
+  return SetLists;
 }(React.Component);
 
-ReactDOM.render(React.createElement(SetList, null), contentNode);
+ReactDOM.render(React.createElement(SetLists, null), contentNode);

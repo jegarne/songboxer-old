@@ -7,25 +7,67 @@ class SongFilter extends React.Component {
       )};
 }
 
-class SongTable extends React.Component {
+class SetList extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { sets: props.setList.sets };
+    this.createSet = this.createSet.bind(this);
+  }
+
+  createSet(newSet) {
+    const newSets = this.state.sets.slice();
+    newSet.id = this.state.sets.length + 1;
+    newSets.push(newSet);
+    this.setState({sets:newSets});
+  }
+
   render() {
-      const songRows =  this.props.songs.map(s => <SongRow key={s.id} song={s}></SongRow>)
+      const sets =  this.props.setList.sets.map(s => <Set key={s.id} set={s}></Set>)
       return (
-        <table  className="bordered-table">
-          <thead>
-            <tr>
-              <th>Id</th>
-              <th>Title</th>
-            </tr>
-          </thead>
-          <tbody>
-              {songRows}
-          </tbody>
-        </table>
+        <div>
+          <h2>{this.props.setList.title}</h2>
+          <SetAdd createSet={this.createSet}/>
+          {sets}
+        </div>
       )};
 }
 
-class SongRow extends React.Component {
+class Set extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { songs: props.set.songs };
+    this.createSong = this.createSong.bind(this);
+  }
+
+  createSong(newSong) {
+    const newSongs = this.state.songs.slice();
+    newSong.id = this.state.songs.length + 1;
+    newSongs.push(newSong);
+    this.setState({songs:newSongs});
+  }
+
+  render() {
+      const songRows =  this.props.set.songs.map(s => <Song key={s.id} song={s}></Song>)
+      return (
+        <div>
+          <h2>{this.props.set.title}</h2>
+          <SongAdd createSong={this.createSong}/>
+          <table  className="bordered-table">
+            <thead>
+              <tr>
+                <th>Id</th>
+                <th>Title</th>
+              </tr>
+            </thead>
+            <tbody>
+                {songRows}
+            </tbody>
+          </table>
+        </div>
+      )};
+}
+
+class Song extends React.Component {
   render() {
       const song = this.props.song;
       return (
@@ -33,6 +75,32 @@ class SongRow extends React.Component {
           <td>{song.id}</td>
           <td>{song.title}</td>
         </tr>
+      )};
+}
+
+class SetAdd extends React.Component {
+  constructor() {
+    super();
+    this.handleSubmit = this.handleSubmit.bind(this);
+  }
+
+  handleSubmit(e) {
+    e.preventDefault();
+    var form = document.forms.setAdd;
+    this.props.createSet({
+      title: form.title.value
+    });
+    form.title.value = "";
+  }
+
+  render() {
+      return (
+        <div>
+          <form name="setAdd" onSubmit={this.handleSubmit}>
+            <input type="text" name="title" placeholder="Title"></input>
+            <button>Add Set</button>
+          </form>
+        </div>
       )};
 }
 
@@ -56,19 +124,24 @@ class SongAdd extends React.Component {
         <div>
           <form name="songAdd" onSubmit={this.handleSubmit}>
             <input type="text" name="title" placeholder="Title"></input>
-            <button>Add</button>
+            <button>Add Song</button>
           </form>
         </div>
       )};
 }
 
-const songs = [{id:0, title:"Purple Rain"}, {id:1, title:"Rain Song"}]
+const setLists = [{id:0, title:"Big Gig",
+                  sets:[
+                    {id:0, title:"Set 1", songs:[{id:0, title:"Purple Rain"}, {id:1, title:"Rain Song"}]}
+                    ,{id:1, title:"Set 2", songs:[{id:0, title:"Purple Rain"}, {id:1, title:"Rain Song"}]}
+                  ]
+                 }]
 
-class SetList extends React.Component {
+class SetLists extends React.Component {
   constructor() {
     super();
-    this.state = { songs: [] };
-    this.createSong = this.createSong.bind(this);
+    this.state = { setLists: [] };
+    this.createSetlist = this.createSetlist.bind(this);
   }
 
   componentDidMount() {
@@ -77,28 +150,27 @@ class SetList extends React.Component {
 
   loadData() {
     setTimeout(() => {
-      this.setState({songs:songs});
+      this.setState({setLists:setLists});
     }, 500);
   }
 
-  createSong(newSong) {
-    const newSongs = this.state.songs.slice();
-    newSong.id = this.state.songs.length + 1;
-    newSongs.push(newSong);
-    this.setState({songs:newSongs});
+  createSetlist(newSetlist) {
+    const newSetlists = this.state.setLists.slice();
+    newSetlist.id = this.state.setLists.length + 1;
+    newSetlists.push(newSetlist);
+    this.setState({setLists:newSetlists});
   }
 
   render() {
+      const setLists =  this.state.setLists.map(s => <SetList key={s.id} setList={s} />)
       return (
         <div>
           <h1>SongBoxer</h1>
           <SongFilter />
           <hr />
-          <SongTable songs={this.state.songs} />
-          <hr />
-          <SongAdd createSong={this.createSong}/>
+          {setLists}
         </div>
       )};
 }
 
-ReactDOM.render(<SetList />, contentNode);
+ReactDOM.render(<SetLists />, contentNode);
