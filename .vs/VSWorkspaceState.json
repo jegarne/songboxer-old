@@ -1,9 +1,15 @@
 {
   "ExpandedNodes": [
     "",
+    "\\public",
     "\\src",
-    "\\src\\components"
+    "\\src\\components",
+    "\\src\\components\\common",
+    "\\src\\components\\set",
+    "\\src\\components\\song",
+    "\\src\\containers",
+    "\\src\\reducers"
   ],
-  "SelectedNode": "\\src\\components\\SongFilter.js",
+  "SelectedNode": "\\src\\reducers\\index.js",
   "PreviewInSolutionExplorer": false
 }
